@@ -1,0 +1,2 @@
+# Is file ka kaam hota hai different models ko train karna.
+# Matlab: Kitan models use karna hai? I probably call over the confusion matrix if i am probably solving a classification problem. I will also call over the accuracy score, precision, recall, and f1 score. I will also call over the classification report. I will also call over the roc_auc_score. I will also call over the mean_squared_error, mean_absolute_error, and r2_score if I am solving a regression problem.
