@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import pickle
 from typing import Any, Dict
@@ -77,44 +77,21 @@ def evaluate_models(
     y_test,
     models: Dict,
     param: Dict
-) -> Dict:
+):
     """
     Train multiple models using GridSearchCV and evaluate them.
 
-    Parameters
-    ----------
-    X_train : Training features
-
-    y_train : Training labels
-
-    X_test : Testing features
-
-    y_test : Testing labels
-
-    models : Dictionary
-        {
-            "Linear Regression": LinearRegression(),
-            "Random Forest": RandomForestRegressor()
-        }
-
-    param : Dictionary
-        {
-            "Linear Regression": {},
-            "Random Forest": {
-                "n_estimators":[100,200]
-            }
-        }
-
     Returns
     -------
-    Dict
-        Dictionary containing train score,
-        test score and best parameters.
+    Tuple[Dict[str, Dict[str, float]], Dict[str, Any]]
+        - report: model metrics and best parameters
+        - best_models: fitted best estimators for each candidate model
     """
 
     try:
 
         report = {}
+        best_models = {}
 
         logging.info("Model evaluation started.")
 
@@ -136,6 +113,7 @@ def evaluate_models(
             gs.fit(X_train, y_train)
 
             best_model = gs.best_estimator_
+            best_models[model_name] = best_model
 
             y_train_pred = best_model.predict(X_train)
             y_test_pred = best_model.predict(X_test)
@@ -157,7 +135,7 @@ def evaluate_models(
 
         logging.info("Model evaluation completed.")
 
-        return report
+        return report, best_models
 
     except Exception as e:
         logging.error("Error occurred during model evaluation.")

@@ -1,4 +1,4 @@
-# ==========================================================
+﻿# ==========================================================
 # Data Ingestion Component
 # Purpose:
 # 1. Read dataset
@@ -18,6 +18,7 @@ from src.logger import logging
 from src.exception import CustomException
 from src.components.transformation import DataTransformation
 
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
 # ==========================================================
 # Configuration Class
@@ -25,9 +26,9 @@ from src.components.transformation import DataTransformation
 
 @dataclass
 class DataIngestionConfig:
-    train_data_path: str = os.path.join("artifacts", "train.csv")
-    test_data_path: str = os.path.join("artifacts", "test.csv")
-    raw_data_path: str = os.path.join("artifacts", "data.csv")
+    train_data_path: str = os.path.join(ROOT_DIR, "artifacts", "train.csv")
+    test_data_path: str = os.path.join(ROOT_DIR, "artifacts", "test.csv")
+    raw_data_path: str = os.path.join(ROOT_DIR, "artifacts", "data.csv")
 
 
 # ==========================================================
@@ -44,17 +45,15 @@ class DataIngestion:
         logging.info("Entered Data Ingestion Component")
 
         try:
-            # Read Dataset
-            df = pd.read_csv("notebook/data/stud.csv")
+            raw_data_path = os.path.join(ROOT_DIR, "notebook", "data", "stud.csv")
+            df = pd.read_csv(raw_data_path)
             logging.info("Dataset loaded successfully.")
 
-            # Create artifacts folder
             os.makedirs(
                 os.path.dirname(self.ingestion_config.train_data_path),
                 exist_ok=True
             )
 
-            # Save raw dataset
             df.to_csv(
                 self.ingestion_config.raw_data_path,
                 index=False,
@@ -63,21 +62,18 @@ class DataIngestion:
 
             logging.info("Raw dataset saved.")
 
-            # Train-Test Split
             train_set, test_set = train_test_split(
                 df,
                 test_size=0.2,
                 random_state=42
             )
 
-            # Save train dataset
             train_set.to_csv(
                 self.ingestion_config.train_data_path,
                 index=False,
                 header=True
             )
 
-            # Save test dataset
             test_set.to_csv(
                 self.ingestion_config.test_data_path,
                 index=False,
